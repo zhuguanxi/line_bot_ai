@@ -65,7 +65,7 @@ def handle_message(event):
     message = event.message.text
     save_message(user_id, "USER: " + message)  # 儲存訊息進資料庫
 
-    message = event.message.text
+    #message = event.message.text
     if message == 'sticker':
         output = StickerSendMessage(
             package_id='6362',
@@ -76,14 +76,12 @@ def handle_message(event):
             original_content_url = "https://ithelp.ithome.com.tw/upload/images/20220925/20151681EaMkK6ROvq.jpg",
             preview_image_url = "https://ithelp.ithome.com.tw/upload/images/20220925/20151681EaMkK6ROvq.jpg"
         )
-
     elif message == 'video':
         print("video 被觸發")
         output = VideoSendMessage(
             original_content_url="https://media.w3.org/2010/05/sintel/trailer.mp4",
             preview_image_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"
         )
-
     elif message == 'location':
         output = LocationSendMessage(
             title='Mask Map',
@@ -103,7 +101,10 @@ def handle_message(event):
     else:
         output = TextSendMessage(text=message)
 
-    save_message(user_id, "BOT: " + output.text)
+    if isinstance(output, TextSendMessage):
+        save_message(user_id, "BOT: " + output.text)
+    else:
+        save_message(user_id, f"BOT: [{output.__class__.__name__}]")
     line_bot_api.reply_message(
         event.reply_token,
         output)
@@ -132,5 +133,5 @@ def save_message(user_id, message):
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
 
