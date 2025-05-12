@@ -89,17 +89,17 @@ def handle_message(event):
             latitude=24.970130,
             longitude=121.263303
         )
-    elif message == "學deep learning要從哪邊開始":
+    else :
         try:
             genai.configure(api_key="AIzaSyBZ2Rqkk4bjW1ZQHKAbH_dwmEN5VvUqHXI")
             model = genai.GenerativeModel("gemini-1.5-flash")
             chat = model.start_chat()
-            reply = chat.send_message("學deep learning要從哪邊開始")
+            reply = chat.send_message(message)
             output = TextSendMessage(text=reply.text)
         except Exception as e:
             output = TextSendMessage(text="發生錯誤，請稍後再試～")
-    else:
-        output = TextSendMessage(text=message)
+    #else:
+    #    output = TextSendMessage(text=message)
 
     if isinstance(output, TextSendMessage):
         save_message(user_id, "BOT: " + output.text)
